@@ -1,0 +1,12 @@
+{
+  "name": "screenshots",
+  "version": "1.0.0",
+  "description": "get screenshots from a thing",
+  "license": "GPL",
+  "devDependencies": {
+    "phantomjs": "^2.1.7"
+  },
+  "scripts": {
+    "start": "./node_modules/phantomjs/bin/phantomjs ./script.js"
+  }
+}
