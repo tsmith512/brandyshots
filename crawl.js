@@ -25,9 +25,11 @@ const crawlAll = function(parentUrl) {
             const href = childLinks[index].attribs.href.trim();
             if (href) {
               const nextUrl = new URL(href, parentUrl);
-              if (!alreadySeen.includes(nextUrl)) {
-                alreadySeen.push(nextUrl);
-                crawlAll(nextUrl);
+              if (firstUrl.host == nextUrl.host) {
+                if (!alreadySeen.includes(nextUrl)) {
+                  alreadySeen.push(nextUrl);
+                  crawlAll(nextUrl);
+                }
               }
             }
           }
@@ -41,4 +43,5 @@ const crawlAll = function(parentUrl) {
   })
 }
 
-crawlAll('https://www.tsmithcreative.com');
+const firstUrl = new URL('https://www.tsmithcreative.com');
+crawlAll(firstUrl);
