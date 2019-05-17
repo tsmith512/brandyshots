@@ -20,7 +20,7 @@ const crawlAll = function(parentUrl) {
 
       try {
         const childLinks = $("a");
-        for (let index = 0; index < Object.keys(childLinks).length; index++) {
+        Object.keys(childLinks).forEach((index) => {
           if (childLinks[index].type === 'tag') {
             const href = childLinks[index].attribs.href.trim();
             if (href) {
@@ -33,7 +33,7 @@ const crawlAll = function(parentUrl) {
               }
             }
           }
-        }
+        });
       } catch (e) {
         console.error("Encountered error crawling " + parentUrl + "\n" + e);
         done();
