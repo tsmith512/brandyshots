@@ -28,7 +28,9 @@ const crawlAll = function(parentUrl) {
               if (firstUrl.host == nextUrl.host) {
                 if (!alreadySeen.includes(nextUrl.href)) {
                   alreadySeen.push(nextUrl.href);
-                  crawlAll(nextUrl);
+                  if (nextUrl.pathname.match(/\.(mp.|jpg|png|gif|xml|rss|pdf)$/i) === null) {
+                    crawlAll(nextUrl);
+                  }
                 }
               }
             }
