@@ -38,6 +38,11 @@ const crawlAll = function(parentUrl) {
           // If the link in quesiton has already been noted, skip it
           if (alreadySeen.includes(nextUrl.href)) { return; }
 
+          // Have we already seen this path on a different protocol? If so, skip
+          // @TODO: This could probably be cleaner.
+          if (nextUrl.protocol === 'http:' && alreadySeen.includes(nextUrl.href.replace(/^http:/, 'https:'))) { return; }
+          if (nextUrl.protocol === 'https:' && alreadySeen.includes(nextUrl.href.replace(/^https:/, 'http:'))) { return; }
+
           // Mark the link as noted, then if it isn't a media asset, crawl it.
           alreadySeen.push(nextUrl.href);
           if (nextUrl.pathname.match(/\.(mp.|jpg|png|gif|xml|rss|pdf)$/i) === null) {
