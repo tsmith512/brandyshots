@@ -1,4 +1,5 @@
 const Crawler = require("crawler");
+const URL = require("url").URL;
 // const puppeteer = require('puppeteer');
 
 let alreadySeen = [];
@@ -22,19 +23,21 @@ const crawlAll = function(parentUrl) {
         Object.keys(childLinks).forEach((index) => {
           if (childLinks[index].type === 'tag') {
             const href = childLinks[index].attribs.href.trim();
-
-            if (href && !alreadySeen.includes(href)) {
-              alreadySeen.push(href);
-              crawlAll(href);
+            if (href) {
+              const nextUrl = new URL(href, parentUrl);
+              if (!alreadySeen.includes(nextUrl)) {
+                alreadySeen.push(nextUrl);
+                crawlAll(nextUrl);
+              }
             }
           }
         });
       } catch (e) {
-        console.error("Encountered error crawling" + parentUrl);
+        console.error("Encountered error crawling " + parentUrl + "\n" + e);
         done();
       }
       done();
-      }
+    }
   })
 }
 
