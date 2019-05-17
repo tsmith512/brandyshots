@@ -2,11 +2,10 @@ const Crawler = require("crawler");
 const URL = require("url").URL;
 // const puppeteer = require('puppeteer');
 
+// So that we don't crawl anything twice.
 let alreadySeen = [];
 
 const c = new Crawler();
-
-// Adapted from https://stackoverflow.com/a/50164565
 
 const crawlAll = function(parentUrl) {
   console.log("Crawling " + parentUrl);
@@ -21,20 +20,27 @@ const crawlAll = function(parentUrl) {
       try {
         const childLinks = $("a");
         Object.keys(childLinks).forEach((index) => {
-          if (childLinks[index].type === 'tag') {
-            let href = childLinks[index].attribs.href;
-            href = href.trim().replace(/#.*$/, '');
-            if (href) {
-              const nextUrl = new URL(href, parentUrl);
-              if (firstUrl.host == nextUrl.host) {
-                if (!alreadySeen.includes(nextUrl.href)) {
-                  alreadySeen.push(nextUrl.href);
-                  if (nextUrl.pathname.match(/\.(mp.|jpg|png|gif|xml|rss|pdf)$/i) === null) {
-                    crawlAll(nextUrl);
-                  }
-                }
-              }
-            }
+          // We're only processing <a/> tags
+          if (childLinks[index].type !== 'tag') { return; }
+
+          // Capture and clean the href attribute
+          let href = childLinks[index].attribs.href;
+          href = href.trim().replace(/#.*$/, '');
+          if (!href) { return; }
+
+          // Construct a URL parser on the new href so we can do some checks
+          const nextUrl = new URL(href, parentUrl);
+
+          // Stay within the original hostname
+          if (firstUrl.host !== nextUrl.host) { return; }
+
+          // If the link in quesiton has already been noted, skip it
+          if (alreadySeen.includes(nextUrl.href)) { return; }
+
+          // Mark the link as noted, then if it isn't a media asset, crawl it.
+          alreadySeen.push(nextUrl.href);
+          if (nextUrl.pathname.match(/\.(mp.|jpg|png|gif|xml|rss|pdf)$/i) === null) {
+            crawlAll(nextUrl);
           }
         });
       } catch (e) {
