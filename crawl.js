@@ -22,7 +22,8 @@ const crawlAll = function(parentUrl) {
         const childLinks = $("a");
         Object.keys(childLinks).forEach((index) => {
           if (childLinks[index].type === 'tag') {
-            const href = childLinks[index].attribs.href.trim();
+            let href = childLinks[index].attribs.href;
+            href = href.trim().replace(/#.*$/, '');
             if (href) {
               const nextUrl = new URL(href, parentUrl);
               if (firstUrl.host == nextUrl.host) {
