@@ -6,6 +6,7 @@ const URL = require("url").URL;
 let alreadySeen = [];
 
 const c = new Crawler();
+c.on('drain', () => { console.log(alreadySeen); });
 
 const crawlAll = function(parentUrl) {
   console.log("Crawling " + parentUrl);
