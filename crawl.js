@@ -20,20 +20,20 @@ const crawlAll = function(parentUrl) {
 
       try {
         const childLinks = $("a");
-        Object.keys(childLinks).forEach((index) => {
+        for (let index = 0; index < Object.keys(childLinks).length; index++) {
           if (childLinks[index].type === 'tag') {
             const href = childLinks[index].attribs.href.trim();
             if (href) {
               const nextUrl = new URL(href, parentUrl);
               if (firstUrl.host == nextUrl.host) {
-                if (!alreadySeen.includes(nextUrl)) {
-                  alreadySeen.push(nextUrl);
+                if (!alreadySeen.includes(nextUrl.href)) {
+                  alreadySeen.push(nextUrl.href);
                   crawlAll(nextUrl);
                 }
               }
             }
           }
-        });
+        }
       } catch (e) {
         console.error("Encountered error crawling " + parentUrl + "\n" + e);
         done();
@@ -44,4 +44,5 @@ const crawlAll = function(parentUrl) {
 }
 
 const firstUrl = new URL('https://www.tsmithcreative.com');
+alreadySeen.push(firstUrl.href);
 crawlAll(firstUrl);
