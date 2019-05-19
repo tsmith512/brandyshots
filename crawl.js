@@ -1,15 +1,19 @@
 const Crawler = require("crawler");
 const URL = require("url").URL;
-// const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 // So that we don't crawl anything twice.
 let alreadySeen = [];
 
+// To queue up URLs to actually render and image.
+let shotList = [];
+
 const c = new Crawler();
-c.on('drain', () => { console.log(alreadySeen); });
 
 const crawlAll = function(parentUrl) {
   console.log("Crawling " + parentUrl);
+  shotList.push(parentUrl.href);
 
   c.queue({
     url: parentUrl,
@@ -57,6 +61,30 @@ const crawlAll = function(parentUrl) {
     }
   })
 }
+
+c.on('drain', () => { (async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setViewport({width: 1920, height: 1080});
+
+    if (!fs.existsSync('output')){
+      fs.mkdirSync('output');
+    }
+
+    for (let i = 0; i < shotList.length; i++) {
+      let filename = shotList[i].replace(/^.+:\/\//, '').replace(/\/$/, '').replace(/(\/|\\)/g, '-') + ".png";
+
+      try {
+        await page.goto(shotList[i],  {waitUntil: 'networkidle2'});
+        await page.screenshot({path: "output/" + filename, fullPage: true});
+      } catch (e) {
+        throw e;
+      }
+    }
+
+    await browser.close();
+  })();
+});
 
 const firstUrl = new URL('https://www.tsmithcreative.com');
 alreadySeen.push(firstUrl.href);
