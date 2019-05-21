@@ -72,15 +72,20 @@ c.on('drain', () => { (async () => {
       fs.mkdirSync('output');
     }
 
+    console.log("Received list of " + shotList.length + " to capture");
+
     for (let i = 0; i < shotList.length; i++) {
       let filename = shotList[i].replace(/^.+:\/\//, '').replace(/\/$/, '').replace(/(\/|\\)/g, '-') + ".png";
 
-      try {
-        await page.goto(shotList[i],  {waitUntil: 'networkidle2'});
-        await page.screenshot({path: "output/" + filename, fullPage: true});
-      } catch (e) {
-        throw e;
-      }
+      console.log("Navigating to " + shotList[i]);
+      await page.goto(shotList[i],  {waitUntil: 'networkidle2'}).catch(e => {
+        console.log("Error navigating to " + shotList[i]);
+        console.log(e);
+      })
+      await page.screenshot({path: "output/" + filename, fullPage: true}).catch(e => {
+        console.log("Error capturing " + shotList[i]);
+        console.log(e);
+      });
     }
 
     await browser.close();
