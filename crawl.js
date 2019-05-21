@@ -28,9 +28,10 @@ const crawlAll = function(parentUrl) {
           // We're only processing <a/> tags
           if (childLinks[index].type !== 'tag') { return; }
 
-          // Capture and clean the href attribute
+          // Require, capture, and clean the href attribute
+          if (!childLinks[index].attribs.hasOwnProperty('href')) { return; }
           let href = childLinks[index].attribs.href;
-          href = href.trim().replace(/#.*$/, '');
+          href = href.trim().replace(/#.*$/, ''); // Skip fragments
           if (!href) { return; }
 
           // Construct a URL parser on the new href so we can do some checks
