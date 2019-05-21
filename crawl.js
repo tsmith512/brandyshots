@@ -75,7 +75,12 @@ c.on('drain', () => { (async () => {
     console.log("Received list of " + shotList.length + " to capture");
 
     for (let i = 0; i < shotList.length; i++) {
-      let filename = shotList[i].replace(/^.+:\/\//, '').replace(/\/$/, '').replace(/(\/|\\)/g, '-') + ".png";
+      let filename = shotList[i]
+        .replace(/^.+:\/\//, '') // Remove the protocol
+        .replace(/\/$/, '') // Remove a trailing slash
+        .replace(/(\/|\\)/g, '_') // Replace slashes with underscores
+        .replace(/\W/g, '-') // Replace any non-word [^A-Za-z0-9_] with a hyphen
+        + ".png";
 
       console.log("Navigating to " + shotList[i]);
       await page.goto(shotList[i],  {waitUntil: 'networkidle2'}).catch(e => {
