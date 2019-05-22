@@ -20,6 +20,12 @@ const crawlAll = function(parentUrl) {
     callback: function (err, res, done) {
       if (err) throw err;
 
+      // Only inspect HTML responses (for now)
+      if (res.headers['content-type'].indexOf("text/html") === -1) {
+        done();
+        return;
+      }
+
       const $ = res.$;
 
       try {
