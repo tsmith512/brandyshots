@@ -20,6 +20,15 @@ let alreadySeen = [];
 // To queue up URLs to actually render and image.
 let shotList = [];
 
+// Make sure the output directory exists.
+if (!fs.existsSync('output')){
+  fs.mkdirSync('output');
+}
+
+const captureReport = (argv.r) ? fs.createWriteStream("output/report.txt", {flags:'w', encoding: 'utf8', autoClose: true}) : false;
+
+const linksList = (argv.l) ? fs.createWriteStream("output/list.txt", {flags:'w', encoding: 'utf8', autoClose: true}) : false;
+
 const c = new Crawler();
 
 const crawlAll = function(parentUrl) {
@@ -51,10 +60,11 @@ const crawlAll = function(parentUrl) {
           href = href.trim().replace(/#.*$/, ''); // Skip fragments
           if (!href) { return; }
 
-          if (argv.l) {
+          if (linksList !== false) {
             // @TODO: This would be better in [{from: , to: }, {}...] format for
             // analysis later and output to a file.
             console.log(parentUrl + " --> " + href);
+            linksList.write(parentUrl + " --> " + href + "\n");
           }
 
           // Construct a URL parser on the new href so we can do some checks
@@ -91,15 +101,13 @@ c.on('drain', () => { (async () => {
     const page = await browser.newPage();
     await page.setViewport({width: 1920, height: 1080});
 
-    if (!fs.existsSync('output')){
-      fs.mkdirSync('output');
-    }
-
     console.log("Received list of " + shotList.length + " to capture");
 
-    if (argv.l) {
+    if (captureReport !== false) {
       // @TODO: Output this to a file
       console.log(shotList.join("\n"));
+      captureReport.write("Received list of " + shotList.length + " to capture.\n\n");
+      captureReport.write(shotList.join("\n"));
     }
 
     for (let i = 0; i < shotList.length; i++) {
