@@ -4,7 +4,12 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const argv = require('yargs')
   .usage('Usage: [placeholder] [options] -- [url]')
-  .describe('')
+  .boolean('r')
+  .alias('r', 'report')
+  .describe('r', 'Generate a report of all URLs captured')
+  .boolean('l')
+  .alias('l', 'list')
+  .describe('l', 'Generate a list of all links encountered')
   .help('h')
   .alias('h', 'help')
   .argv;
@@ -46,6 +51,12 @@ const crawlAll = function(parentUrl) {
           href = href.trim().replace(/#.*$/, ''); // Skip fragments
           if (!href) { return; }
 
+          if (argv.l) {
+            // @TODO: This would be better in [{from: , to: }, {}...] format for
+            // analysis later and output to a file.
+            console.log(parentUrl + " --> " + href);
+          }
+
           // Construct a URL parser on the new href so we can do some checks
           const nextUrl = new URL(href, parentUrl);
 
@@ -85,6 +96,11 @@ c.on('drain', () => { (async () => {
     }
 
     console.log("Received list of " + shotList.length + " to capture");
+
+    if (argv.l) {
+      // @TODO: Output this to a file
+      console.log(shotList.join("\n"));
+    }
 
     for (let i = 0; i < shotList.length; i++) {
       let filename = shotList[i]
