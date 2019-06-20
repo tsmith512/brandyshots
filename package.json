@@ -9,5 +9,8 @@
   },
   "scripts": {
     "start": "./node_modules/phantomjs/bin/phantomjs ./script.js"
+  },
+  "dependencies": {
+    "yargs": "^13.2.4"
   }
 }

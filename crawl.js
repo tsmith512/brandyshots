@@ -2,6 +2,13 @@ const Crawler = require("crawler");
 const URL = require("url").URL;
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const argv = require('yargs')
+  .usage('Usage: [placeholder] [options]')
+  .describe('u', 'URL to start crawling')
+  .alias('u', 'url')
+  .help('h')
+  .alias('h', 'help')
+  .argv;
 
 // So that we don't crawl anything twice.
 let alreadySeen = [];
@@ -103,6 +110,6 @@ c.on('drain', () => { (async () => {
   })();
 });
 
-const firstUrl = new URL('https://www.tsmithcreative.com');
+const firstUrl = new URL(argv.url);
 alreadySeen.push(firstUrl.href);
 crawlAll(firstUrl);
