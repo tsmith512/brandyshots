@@ -3,9 +3,8 @@ const URL = require("url").URL;
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const argv = require('yargs')
-  .usage('Usage: [placeholder] [options]')
-  .describe('u', 'URL to start crawling')
-  .alias('u', 'url')
+  .usage('Usage: [placeholder] [options] -- [url]')
+  .describe('')
   .help('h')
   .alias('h', 'help')
   .argv;
@@ -110,6 +109,6 @@ c.on('drain', () => { (async () => {
   })();
 });
 
-const firstUrl = new URL(argv.url);
+const firstUrl = new URL(argv._[0]);
 alreadySeen.push(firstUrl.href);
 crawlAll(firstUrl);
