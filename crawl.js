@@ -33,6 +33,17 @@ const c = new Crawler();
 
 const crawlAll = function(parentUrl) {
   console.log("Crawling " + parentUrl);
+
+  // FILTER ON URLs AND PATH NAMES HERE.
+  //
+  // For example:
+  // if (parentUrl.pathname.indexOf('something-to-exclude') !== -1) {
+  //   return;
+  // }
+  //
+  // THEY WILL BE SKIPPED AND NOT CRAWLED/FETCHED.
+
+
   shotList.push(parentUrl.href);
 
   c.queue({
