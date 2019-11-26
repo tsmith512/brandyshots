@@ -1,6 +1,8 @@
 # Brandy Shots
 
-A tool to automatically crawl capture screenshots of an entire website.
+A tool to automatically crawl capture screenshots of an entire website. Written
+for a friend, for a thing we used to have to do a lot. Maybe you will find it
+useful, too.
 
 ## Installation
 
